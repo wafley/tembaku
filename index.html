@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <title>TEMBAKU - Sci-Fi 3D FPS</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Canvas 3D Game Container -->
+    <div id="game-container"></div>
+
+    <!-- Screen Damage Effect -->
+    <div id="damage-overlay"></div>
+    <!-- Screen Heal Effect -->
+    <div id="heal-overlay"></div>
+    <!-- Screen Low HP Heartbeat Effect -->
+    <div id="critical-overlay"></div>
+    <!-- Boss Atmospheric Combat Vignette -->
+    <div id="boss-atmosphere-overlay"></div>
+
+    <!-- HUD Interface -->
+    <div id="hud" class="hud hidden">
+      <!-- Boss HUD Bar -->
+      <div id="boss-hud" class="boss-hud hidden">
+        <div class="boss-title-row">
+          <span class="boss-warning-tag">⚠️ DANGER // TITAN CLASS DETECTED</span>
+          <span id="boss-name" class="boss-name">NEXUS TITAN-X</span>
+          <span id="boss-hp-text" class="boss-hp-text">100%</span>
+        </div>
+        <div class="boss-bar-bg">
+          <div id="boss-bar-fill" class="boss-bar-fill"></div>
+        </div>
+      </div>
+
+      <!-- Off-screen Enemy Threat Edge Indicators -->
+      <div id="enemy-edge-indicators" class="enemy-edge-indicators">
+        <div id="edge-arrow-left" class="edge-arrow left hidden">‹</div>
+        <div id="edge-arrow-right" class="edge-arrow right hidden">›</div>
+        <div id="edge-arrow-back" class="edge-arrow back hidden">⌄</div>
+      </div>
+
+      <!-- Crosshair -->
+      <div id="crosshair-container">
+        <div class="crosshair-dot"></div>
+        <div class="crosshair-line top"></div>
+        <div class="crosshair-line bottom"></div>
+        <div class="crosshair-line left"></div>
+        <div class="crosshair-line right"></div>
+        <div id="hit-marker"></div>
+      </div>
+
+      <!-- Dynamic Combat Center Warning Alerts -->
+      <div id="combat-warnings">
+        <div id="empty-ammo-alert" class="combat-alert danger hidden">
+          <span class="alert-icon">⚠️</span>
+          <span class="alert-text">PELURU HABIS — TEKAN [R] RELOAD</span>
+        </div>
+        <div id="low-hp-alert" class="combat-alert critical hidden">
+          <span class="alert-icon">⚡</span>
+          <span class="alert-text">INTEGRITAS KRITIS — GUNAKAN MEDKIT [Q]</span>
+        </div>
+        <div id="boss-alert" class="combat-alert boss-alert hidden">
+          <span class="alert-icon">☠️</span>
+          <span class="alert-text">PERTEMPURAN BOSS: HANCURKAN NEXUS TITAN</span>
+        </div>
+      </div>
+
+      <!-- Top Stats -->
+      <div class="hud-top">
+        <div class="hud-panel score-panel">
+          <span class="label">SCORE</span>
+          <span id="score-val" class="value">0000</span>
+        </div>
+        <div class="hud-panel wave-panel">
+          <span class="label">WAVE</span>
+          <span id="wave-val" class="value highlight">1</span>
+        </div>
+        <div class="hud-panel kills-panel">
+          <span class="label">DRONES DESTROYED</span>
+          <span id="kills-val" class="value">0</span>
+        </div>
+      </div>
+
+      <!-- Central Alerts / Wave Banner -->
+      <div id="alert-banner" class="alert-banner hidden">WAVE 1 INCOMING</div>
+
+      <!-- Bottom Left: Health & Medkit -->
+      <div class="hud-bottom-left">
+        <div class="hud-panel medkit-panel">
+          <span class="key-badge">Q</span>
+          <div class="medkit-info">
+            <span class="medkit-title">NANITE STIM HEAL</span>
+            <span id="medkit-status" class="medkit-status ready">READY (+25 HP)</span>
+          </div>
+        </div>
+        <div class="hud-panel health-panel">
+          <div class="health-header">
+            <span class="label">INTEGRITY</span>
+            <span id="health-val" class="health-text">100%</span>
+          </div>
+          <div class="health-bar-bg">
+            <div id="health-bar-fill" class="health-bar-fill"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Right: Ammo -->
+      <div class="hud-bottom-right">
+        <div class="hud-panel ammo-panel">
+          <div class="ammo-header">
+            <span class="weapon-name">PLASMA RIFLE PR-9</span>
+          </div>
+          <div class="ammo-digits">
+            <span id="ammo-cur" class="ammo-current">30</span>
+            <span class="ammo-sep">/</span>
+            <span id="ammo-max" class="ammo-max">30</span>
+          </div>
+          <div id="reload-prompt" class="reload-prompt hidden">PRESS [R] TO RELOAD</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Virtual Touch Controls -->
+    <div id="mobile-controls" class="mobile-controls hidden">
+      <!-- Top Right Mobile Pause Button -->
+      <button id="mobile-pause-btn" class="mobile-pause-btn" type="button" aria-label="Pause Menu">
+        <span class="pause-icon">⏸</span>
+      </button>
+
+      <div id="joystick-zone" class="joystick-zone">
+        <div id="joystick-base" class="joystick-base">
+          <div id="joystick-knob" class="joystick-knob"></div>
+        </div>
+      </div>
+      <div class="touch-actions-cluster">
+        <button id="touch-heal-btn" class="touch-btn heal-btn" type="button" aria-label="Heal">
+          <span class="btn-icon">✚</span>
+          <span class="btn-label">HEAL</span>
+        </button>
+        <button
+          id="touch-sprint-btn"
+          class="touch-btn sprint-btn"
+          type="button"
+          aria-label="Sprint"
+        >
+          <span class="btn-icon">⚡</span>
+          <span class="btn-label">RUN</span>
+        </button>
+        <button
+          id="touch-reload-btn"
+          class="touch-btn reload-btn"
+          type="button"
+          aria-label="Reload"
+        >
+          <span class="btn-icon">🔄</span>
+          <span class="btn-label">RELOAD</span>
+        </button>
+        <button
+          id="touch-ads-btn"
+          class="touch-btn ads-btn"
+          type="button"
+          aria-label="Aim Down Sights"
+        >
+          <span class="btn-icon">🎯</span>
+          <span class="btn-label">AIM</span>
+        </button>
+        <button id="touch-jump-btn" class="touch-btn jump-btn" type="button" aria-label="Jump">
+          <span class="btn-icon">⇪</span>
+          <span class="btn-label">JUMP</span>
+        </button>
+        <button id="touch-fire-btn" class="touch-btn fire-btn" type="button" aria-label="Fire">
+          <span class="btn-icon">💥</span>
+          <span class="btn-label">FIRE</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Orientation Warning Overlay (Portrait on mobile) -->
+    <div id="orientation-overlay" class="orientation-overlay hidden">
+      <div class="orientation-card">
+        <div class="phone-rotate-icon">📱 ↷</div>
+        <h2>MODE LANSKAP DIPERLUKAN</h2>
+        <p>
+          Silakan putar perangkat Anda ke posisi mendatar (Landscape) untuk pengalaman tempur FPS
+          terbaik.
+        </p>
+      </div>
+    </div>
+
+    <!-- Lobby / Main Menu Overlay -->
+    <div id="menu-overlay" class="overlay">
+      <div class="menu-card lobby-card">
+        <div class="lobby-header">
+          <h1 class="game-title">TEMBAKU</h1>
+          <p class="subtitle">CYBER PROTOCOL // SCI-FI 3D FPS ARENA</p>
+        </div>
+
+        <div class="lobby-actions">
+          <button id="start-btn" class="cyber-button primary-btn" type="button">
+            <span class="btn-text">MULAI PERMAINAN</span>
+          </button>
+          <div class="lobby-btn-row">
+            <button id="tutorial-btn" class="cyber-button secondary-btn" type="button">
+              <span class="btn-text">📖 CARA BERMAIN</span>
+            </button>
+            <button id="settings-btn" class="cyber-button secondary-btn" type="button">
+              <span class="btn-text">⚙️ PENGATURAN</span>
+            </button>
+          </div>
+          <div class="lobby-btn-row">
+            <button id="help-btn" class="cyber-button secondary-btn" type="button">
+              <span class="btn-text">❓ BANTUAN</span>
+            </button>
+            <button id="license-btn" class="cyber-button secondary-btn" type="button">
+              <span class="btn-text">⚖️ LISENSI</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="subnote">Klik tombol atau tekan Enter untuk masuk ke arena tempur</div>
+      </div>
+    </div>
+
+    <!-- Modal: Pengaturan (Settings) -->
+    <div id="settings-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2 class="modal-title">⚙️ PENGATURAN SISTEM</h2>
+          <button id="close-settings-btn" class="modal-close-btn" type="button" aria-label="Tutup">
+            ✕
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Audio Section -->
+          <div class="settings-group">
+            <h3 class="group-title">AUDIO & SUARA</h3>
+            <div class="setting-row">
+              <div class="setting-label">
+                <span>VOLUME MASTER</span>
+                <span id="volume-val" class="setting-val">80%</span>
+              </div>
+              <input
+                type="range"
+                id="volume-slider"
+                class="cyber-slider"
+                min="0"
+                max="1"
+                step="0.05"
+                value="0.8"
+              />
+            </div>
+            <div class="setting-row inline-row">
+              <span class="setting-text">STATUS AUDIO:</span>
+              <button id="mute-toggle-btn" class="cyber-toggle-btn" type="button">
+                🔊 SUARA: AKTIF
+              </button>
+            </div>
+          </div>
+
+          <!-- Controls & Sensitivity Section -->
+          <div class="settings-group">
+            <h3 class="group-title">SENSITIVITAS & KONTROL</h3>
+            <div id="desktop-sens-row" class="setting-row">
+              <div class="setting-label">
+                <span>SENSITIVITAS MOUSE (DESKTOP)</span>
+                <span id="desktop-sens-val" class="setting-val">1.0x</span>
+              </div>
+              <input
+                type="range"
+                id="desktop-sens-slider"
+                class="cyber-slider"
+                min="0.2"
+                max="3.0"
+                step="0.1"
+                value="1.0"
+              />
+            </div>
+            <div id="mobile-sens-row" class="setting-row">
+              <div class="setting-label">
+                <span>SENSITIVITAS SENTUH (MOBILE)</span>
+                <span id="mobile-sens-val" class="setting-val">1.0x</span>
+              </div>
+              <input
+                type="range"
+                id="mobile-sens-slider"
+                class="cyber-slider"
+                min="0.2"
+                max="3.0"
+                step="0.1"
+                value="1.0"
+              />
+            </div>
+            <div class="setting-row inline-row">
+              <span class="setting-text">AIM ASSIST:</span>
+              <button id="aim-assist-toggle-btn" class="cyber-toggle-btn active" type="button">
+                🎯 AIM ASSIST: ON
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="save-settings-btn" class="cyber-button" type="button">
+            SIMPAN & KEMBALI
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Cara Bermain (Tutorial) -->
+    <div id="tutorial-modal" class="modal-overlay hidden">
+      <div class="modal-card wide-card">
+        <div class="modal-header">
+          <h2 class="modal-title">📖 PANDUAN CARA BERMAIN</h2>
+          <button id="close-tutorial-btn" class="modal-close-btn" type="button" aria-label="Tutup">
+            ✕
+          </button>
+        </div>
+        <div class="modal-body scrollable">
+          <div class="tutorial-section">
+            <h3>🎯 TUJUAN MISI</h3>
+            <p>
+              Bertahan hidup dari gempuran drone bersenjata plasma. Musuh akan bertambah banyak dan
+              agresif di tiap gelombang (Wave). Hancurkan Titan Boss
+              <strong>NEXUS TITAN-X</strong> yang muncul secara berkala.
+            </p>
+          </div>
+
+          <div class="tutorial-section">
+            <h3>🎮 KONTROL DESKTOP</h3>
+            <div class="tutorial-grid">
+              <div class="tut-chip"><span class="tut-key">WASD</span><span>Bergerak</span></div>
+              <div class="tut-chip">
+                <span class="tut-key">MOUSE</span><span>Arahkan Bidikan</span>
+              </div>
+              <div class="tut-chip">
+                <span class="tut-key">KLIK KIRI</span><span>Menembak</span>
+              </div>
+              <div class="tut-chip">
+                <span class="tut-key">KLIK KANAN</span><span>Bidikan Halus (ADS)</span>
+              </div>
+              <div class="tut-chip"><span class="tut-key">SPACE</span><span>Lompat</span></div>
+              <div class="tut-chip">
+                <span class="tut-key">SHIFT</span><span>Sprint / Lari Cepat</span>
+              </div>
+              <div class="tut-chip">
+                <span class="tut-key">R</span><span>Isi Ulang Peluru (Manual)</span>
+              </div>
+              <div class="tut-chip">
+                <span class="tut-key">Q / E</span><span>Nanite Stim (Heal +25)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tutorial-section">
+            <h3>📱 KONTROL MOBILE (LAYAR SENTUH)</h3>
+            <div class="tutorial-grid">
+              <div class="tut-chip">
+                <span class="tut-key">JOYSTICK KIRI</span
+                ><span>Sentuh bebas area kiri untuk bergerak (dorong penuh untuk sprint)</span>
+              </div>
+              <div class="tut-chip">
+                <span class="tut-key">SWIPE KANAN</span
+                ><span>Geser layar kanan untuk mengarahkan kamera</span>
+              </div>
+              <div class="tut-chip">
+                <span class="tut-key">TOMBOL FIRE</span
+                ><span>Sentuh untuk menembak, tahan & geser untuk membidik sambil menembak</span>
+              </div>
+              <div class="tut-chip">
+                <span class="tut-key">TOMBOL AKSI</span
+                ><span>Lompat, Bidik ADS, Reload, dan Nanite Stim</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tutorial-section">
+            <h3>⚡ TIPS & MEKANIKA KHUSUS</h3>
+            <ul class="tutorial-list">
+              <li>
+                <strong>Isi Ulang Manual:</strong> Peluru tidak otomatis terisi saat habis. Tekan
+                [R] atau tombol Reload!
+              </li>
+              <li>
+                <strong>Mata Sensor Boss:</strong> Saat Titan mengaktifkan Kinetic Shield, tembak
+                tepat di mata sensor merah untuk 1.5x Critical Hit!
+              </li>
+              <li>
+                <strong>Flawless Wave:</strong> Bersihkan seluruh gelombang tanpa terkena serangan
+                musuh untuk mendapatkan bonus skor 500x Wave!
+              </li>
+              <li>
+                <strong>Radar Tepi:</strong> Panah merah berdenyut di tepi layar menunjukkan posisi
+                musuh di belakang atau samping Anda.
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="back-tutorial-btn" class="cyber-button" type="button">
+            MENGERTI // KEMBALI
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Bantuan & Tips (Help) -->
+    <div id="help-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2 class="modal-title">❓ BANTUAN & PANDUAN TEKNIS</h2>
+          <button id="close-help-btn" class="modal-close-btn" type="button" aria-label="Tutup">
+            ✕
+          </button>
+        </div>
+        <div class="modal-body scrollable">
+          <div class="tutorial-section">
+            <h3>🔒 KURSOR MOUSE TIDAK TERKUNCI (DESKTOP)</h3>
+            <p>
+              Jika kursor mouse tidak menggerakkan kamera, klik kiri di arena 3D untuk mengaktifkan
+              kembali Pointer Lock API. Tekan [Escape] untuk jeda dan menampilkan kursor kembali.
+            </p>
+          </div>
+
+          <div class="tutorial-section">
+            <h3>📱 PERFORMA & TAMPILAN MOBILE</h3>
+            <p>
+              Game ini dirancang khusus untuk dimainkan dalam
+              <strong>Mode Lanskap (Mendatar)</strong>. Jika muncul peringatan rotasi, putar ponsel
+              Anda ke posisi mendatar. Gunakan peramban Chrome, Safari, atau Firefox versi terbaru.
+            </p>
+          </div>
+
+          <div class="tutorial-section">
+            <h3>🔊 MASALAH SUARA / AUDIO</h3>
+            <p>
+              Peramban modern memblokir audio otomatis sebelum ada interaksi pengguna. Klik "MULAI
+              PERMAINAN" atau ubah slider volume di pengaturan untuk mengaktifkan Web Audio
+              synthesizer.
+            </p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="back-help-btn" class="cyber-button" type="button">KEMBALI</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Lisensi (License) -->
+    <div id="license-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2 class="modal-title">⚖️ LISENSI PERANGKAT LUNAK</h2>
+          <button id="close-license-btn" class="modal-close-btn" type="button" aria-label="Tutup">
+            ✕
+          </button>
+        </div>
+        <div class="modal-body scrollable">
+          <div class="license-box">
+            <pre>
+MIT License
+
+Copyright (c) 2026 TEMBAKU Open Source Project
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.</pre>
+          </div>
+          <p class="license-note">
+            TEMBAKU dibangun menggunakan teknologi sumber terbuka Three.js, TypeScript, dan Vite.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button id="back-license-btn" class="cyber-button" type="button">KEMBALI</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Over Overlay -->
+    <div id="gameover-overlay" class="overlay hidden">
+      <div class="menu-card gameover-card">
+        <h1 class="game-title danger">SYSTEM FAILURE</h1>
+        <p class="subtitle">SIGNAL LOST // DRONES OVERRUN</p>
+
+        <div class="stats-summary">
+          <div class="stat-row">
+            <span>Skor Akhir:</span>
+            <strong id="final-score">0</strong>
+          </div>
+          <div class="stat-row">
+            <span>Drone Dieliminasi:</span>
+            <strong id="final-kills">0</strong>
+          </div>
+          <div class="stat-row">
+            <span>Wave Dicapai:</span>
+            <strong id="final-wave">1</strong>
+          </div>
+        </div>
+
+        <button id="restart-btn" class="cyber-button">REBOOT SISTEM</button>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

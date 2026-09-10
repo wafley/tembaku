@@ -1,0 +1,252 @@
+/* ==========================================================================
+   Mobile Responsive Layout (Landscape Viewport <= 920px or <= 480px height)
+   ========================================================================== */
+@media (max-width: 920px), (max-height: 480px) {
+  /* Top Stats Bar */
+  .hud-top {
+    top: 6px;
+    gap: 8px;
+  }
+
+  .hud-panel {
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+
+  .hud-panel .label {
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+
+  .hud-panel .value {
+    font-size: 14px;
+  }
+
+  /* Move Integrity & Medkit to Top Left to free up bottom left for Joystick */
+  .hud-bottom-left {
+    top: 6px;
+    left: 10px;
+    bottom: auto;
+    gap: 6px;
+    align-items: flex-start;
+  }
+
+  .health-panel {
+    min-width: 120px;
+    padding: 4px 8px;
+  }
+
+  .health-header {
+    margin-bottom: 3px;
+  }
+
+  .health-header .label {
+    font-size: 9px;
+  }
+
+  .health-text {
+    font-size: 11px;
+  }
+
+  .health-bar-bg {
+    height: 6px;
+  }
+
+  .medkit-panel {
+    padding: 3px 6px;
+  }
+
+  .medkit-panel .key-badge {
+    display: none;
+  }
+
+  .medkit-title {
+    display: none;
+  }
+
+  .medkit-status {
+    font-size: 10px;
+  }
+
+  /* Move Ammo count to float above button cluster on right */
+  .hud-bottom-right {
+    bottom: 175px;
+    right: 14px;
+  }
+
+  .ammo-panel {
+    padding: 4px 8px;
+    background: rgba(8, 12, 20, 0.6);
+  }
+
+  .weapon-name {
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+
+  .ammo-digits {
+    font-size: 18px;
+  }
+
+  .ammo-sep {
+    font-size: 13px;
+    margin: 0 2px;
+  }
+
+  .reload-prompt {
+    font-size: 9px;
+    margin-top: 2px;
+  }
+
+  /* Boss HUD */
+  .boss-hud {
+    top: 38px;
+    width: 60%;
+  }
+
+  .boss-warning-tag {
+    font-size: 9px;
+  }
+
+  .boss-name {
+    font-size: 12px;
+  }
+
+  .boss-hp-text {
+    font-size: 12px;
+  }
+
+  .boss-bar-bg {
+    height: 8px;
+  }
+
+  /* Compact Menu Overlay Card */
+  .menu-card {
+    max-width: 90vw;
+    max-height: 88vh;
+    padding: 14px 20px;
+  }
+
+  .lobby-card {
+    padding: 12px 18px;
+  }
+
+  .lobby-actions {
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .lobby-btn-row {
+    gap: 8px;
+  }
+
+  .cyber-button.primary-btn {
+    padding: 10px 20px;
+    font-size: 15px;
+  }
+
+  .cyber-button.secondary-btn {
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+
+  /* Compact Modals */
+  .modal-card {
+    max-height: 90vh;
+  }
+
+  .modal-header {
+    padding: 10px 16px;
+  }
+
+  .modal-title {
+    font-size: 14px;
+  }
+
+  .modal-body {
+    padding: 12px 16px;
+    gap: 12px;
+  }
+
+  .modal-body.scrollable {
+    max-height: 65vh;
+  }
+
+  .tutorial-grid {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .game-title {
+    font-size: 26px;
+    letter-spacing: 3px;
+    margin-bottom: 2px;
+  }
+
+  .subtitle {
+    font-size: 11px;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+
+  .controls-guide {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px 12px;
+    margin-bottom: 12px;
+    padding: 8px 12px;
+  }
+
+  .settings-panel {
+    padding: 8px 12px;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .setting-label {
+    font-size: 9px;
+  }
+
+  .setting-val {
+    font-size: 11px;
+  }
+
+  .cyber-slider {
+    height: 4px;
+  }
+
+  .cyber-slider::-webkit-slider-thumb {
+    width: 14px;
+    height: 14px;
+  }
+
+  .control-item .key {
+    font-size: 10px;
+    padding: 2px 5px;
+    min-width: 45px;
+  }
+
+  .control-item .desc {
+    font-size: 11px;
+  }
+
+  .cyber-button {
+    padding: 8px 24px;
+    font-size: 14px;
+    letter-spacing: 2px;
+  }
+
+  .subnote {
+    font-size: 10px;
+    margin-top: 8px;
+  }
+
+  .stats-summary {
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    gap: 6px;
+  }
+
+  .stat-row {
+    font-size: 14px;
+  }
+}

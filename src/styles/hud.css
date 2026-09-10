@@ -1,0 +1,449 @@
+/* General HUD Layer */
+.hud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+  font-family: var(--font-primary);
+}
+
+/* Center Dynamic Combat Warning Alerts */
+#combat-warnings {
+  position: absolute;
+  top: 58%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.combat-alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 20px;
+  border-radius: 4px;
+  backdrop-filter: blur(8px);
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+  animation: alertBounce 0.6s infinite alternate ease-in-out;
+}
+
+@keyframes alertBounce {
+  from {
+    transform: scale(0.97);
+  }
+  to {
+    transform: scale(1.03);
+  }
+}
+
+.combat-alert .alert-icon {
+  font-size: 16px;
+}
+
+.combat-alert.danger {
+  background: rgba(45, 12, 0, 0.88);
+  border: 1px solid var(--neon-orange);
+  color: #ffaa00;
+  text-shadow: 0 0 10px #ff5500;
+  box-shadow: 0 0 15px rgba(255, 85, 0, 0.4);
+}
+
+.combat-alert.critical {
+  background: rgba(48, 5, 15, 0.9);
+  border: 1px solid var(--neon-red);
+  color: #ff3366;
+  text-shadow: 0 0 12px #ff0044;
+  box-shadow: 0 0 20px rgba(255, 0, 68, 0.5);
+  animation: criticalPulse 0.5s infinite alternate ease-in-out;
+}
+
+@keyframes criticalPulse {
+  0% {
+    transform: scale(0.96);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+}
+
+.combat-alert.boss-alert {
+  background: rgba(35, 6, 28, 0.92);
+  border: 1px solid #ff0077;
+  color: #ff66cc;
+  text-shadow: 0 0 12px #ff0077;
+  box-shadow: 0 0 25px rgba(255, 0, 119, 0.6);
+}
+
+/* Center Crosshair */
+#crosshair-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+}
+
+.crosshair-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px;
+  height: 4px;
+  background-color: var(--neon-cyan);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--neon-cyan);
+}
+
+.crosshair-line {
+  position: absolute;
+  background-color: rgba(0, 240, 255, 0.7);
+  box-shadow: 0 0 4px var(--neon-cyan);
+}
+
+.crosshair-line.top {
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 7px;
+}
+
+.crosshair-line.bottom {
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 7px;
+}
+
+.crosshair-line.left {
+  top: 50%;
+  left: 2px;
+  transform: translateY(-50%);
+  width: 7px;
+  height: 2px;
+}
+
+.crosshair-line.right {
+  top: 50%;
+  right: 2px;
+  transform: translateY(-50%);
+  width: 7px;
+  height: 2px;
+}
+
+/* Hit marker indicator (X flash) */
+#hit-marker {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.05s ease;
+}
+
+#hit-marker::before,
+#hit-marker::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 2px;
+  background-color: #ff3344;
+  box-shadow: 0 0 8px #ff3344;
+}
+
+#hit-marker::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+#hit-marker::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+#hit-marker.active {
+  opacity: 1;
+}
+
+/* Shared HUD Panels */
+.hud-panel {
+  background: var(--dark-bg);
+  border: 1px solid var(--dark-border);
+  backdrop-filter: blur(8px);
+  padding: 10px 18px;
+  border-radius: 4px;
+  box-shadow:
+    0 0 15px rgba(0, 0, 0, 0.5),
+    inset 0 0 10px rgba(0, 240, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.hud-top {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 20px;
+}
+
+.hud-top .hud-panel {
+  align-items: center;
+  min-width: 130px;
+}
+
+.label {
+  font-family: var(--font-sub);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #8fa0ba;
+  margin-bottom: 2px;
+}
+
+.value {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #fff;
+}
+
+.value.highlight {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 10px var(--neon-cyan);
+}
+
+/* Central Alert Banner */
+.alert-banner {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 85, 0, 0),
+    rgba(255, 85, 0, 0.8),
+    rgba(255, 85, 0, 0)
+  );
+  color: #ffffff;
+  padding: 8px 40px;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  text-shadow: 0 0 12px #ff5500;
+  animation: pulseAlert 1.2s infinite alternate;
+}
+
+@keyframes pulseAlert {
+  0% {
+    transform: translateX(-50%) scale(0.96);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(-50%) scale(1.04);
+    opacity: 1;
+  }
+}
+
+.alert-banner.flawless {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 255, 136, 0),
+    rgba(0, 255, 136, 0.85),
+    rgba(0, 255, 136, 0)
+  );
+  color: #ffffff;
+  text-shadow: 0 0 16px #00ff88;
+  border-top: 1px solid rgba(0, 255, 136, 0.4);
+  border-bottom: 1px solid rgba(0, 255, 136, 0.4);
+}
+
+/* Bottom Left: Health & Medkit */
+.hud-bottom-left {
+  position: absolute;
+  bottom: 28px;
+  left: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.medkit-panel {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px;
+  min-width: 250px;
+}
+
+.key-badge {
+  font-size: 13px;
+  font-weight: 900;
+  background: rgba(0, 240, 255, 0.18);
+  color: var(--neon-cyan);
+  border: 1px solid var(--neon-cyan);
+  padding: 3px 8px;
+  border-radius: 4px;
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
+}
+
+.medkit-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.medkit-title {
+  font-family: var(--font-sub);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #8fa0ba;
+}
+
+.medkit-status {
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.medkit-status.ready {
+  color: #00ff88;
+  text-shadow: 0 0 8px #00ff88;
+}
+
+.medkit-status.cooldown {
+  color: var(--neon-amber);
+  text-shadow: 0 0 6px var(--neon-amber);
+}
+
+.health-panel {
+  min-width: 250px;
+}
+
+.health-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.health-text {
+  font-size: 20px;
+  font-weight: 900;
+  color: #00ff88;
+  text-shadow: 0 0 8px #00ff88;
+}
+
+.health-bar-bg {
+  width: 100%;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.health-bar-fill {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #00bb66, #00ff88);
+  box-shadow: 0 0 8px #00ff88;
+  transition:
+    width 0.2s ease,
+    background 0.3s ease;
+}
+
+.health-bar-fill.critical {
+  background: linear-gradient(90deg, #ff0044, #ff5533);
+  box-shadow: 0 0 12px #ff0044;
+}
+
+/* Bottom Right: Ammo */
+.hud-bottom-right {
+  position: absolute;
+  bottom: 28px;
+  right: 32px;
+}
+
+.ammo-panel {
+  min-width: 200px;
+  text-align: right;
+  align-items: flex-end;
+}
+
+.weapon-name {
+  font-family: var(--font-sub);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--neon-cyan);
+  letter-spacing: 2px;
+}
+
+.ammo-digits {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.ammo-current {
+  font-size: 38px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.ammo-current.low {
+  color: var(--neon-red);
+  text-shadow: 0 0 10px var(--neon-red);
+  animation: blinkLow 0.5s infinite alternate;
+}
+
+@keyframes blinkLow {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.4;
+  }
+}
+
+.ammo-sep,
+.ammo-max {
+  font-size: 20px;
+  font-weight: 700;
+  color: #7b8ea6;
+}
+
+.reload-prompt {
+  font-family: var(--font-sub);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--neon-orange);
+  letter-spacing: 2px;
+  margin-top: 4px;
+  animation: blinkLow 0.8s infinite alternate;
+}

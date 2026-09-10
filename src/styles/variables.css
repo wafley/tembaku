@@ -1,0 +1,11 @@
+:root {
+  --neon-cyan: #00f0ff;
+  --neon-cyan-glow: rgba(0, 240, 255, 0.4);
+  --neon-orange: #ff5500;
+  --neon-red: #ff2255;
+  --neon-amber: #ffb703;
+  --dark-bg: rgba(8, 12, 20, 0.75);
+  --dark-border: rgba(0, 240, 255, 0.3);
+  --font-primary: 'Orbitron', monospace, sans-serif;
+  --font-sub: 'Rajdhani', sans-serif;
+}

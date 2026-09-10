@@ -1,0 +1,289 @@
+/* Mobile Virtual Touch Controls Layer */
+.mobile-controls {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 25;
+  pointer-events: none;
+}
+
+/* Dynamic Floating Joystick on Left Half */
+.joystick-zone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 48%;
+  height: 100%;
+  pointer-events: auto;
+  touch-action: none;
+  z-index: 26;
+}
+
+.joystick-base {
+  position: absolute;
+  bottom: 28px;
+  left: 28px;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: rgba(8, 16, 30, 0.45);
+  border: 1.5px solid rgba(0, 240, 255, 0.35);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0.35;
+  transition:
+    opacity 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.joystick-base.active {
+  opacity: 0.85;
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 18px rgba(0, 240, 255, 0.4);
+}
+
+.joystick-knob {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #00f0ff 0%, #0088cc 85%);
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 10px #00f0ff;
+  pointer-events: none;
+  transition: transform 0.05s ease-out;
+}
+
+/* Top Right Mobile Pause Button */
+.mobile-pause-btn {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  pointer-events: auto;
+  touch-action: manipulation;
+  background: rgba(8, 14, 26, 0.55);
+  backdrop-filter: blur(4px);
+  border: 1.5px solid rgba(0, 240, 255, 0.4);
+  color: var(--neon-cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 30;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 0.1s ease,
+    background 0.1s ease;
+}
+
+.mobile-pause-btn .pause-icon {
+  font-size: 15px;
+  line-height: 1;
+}
+
+.mobile-pause-btn:active {
+  transform: scale(0.92);
+  background: rgba(0, 240, 255, 0.4);
+}
+
+/* Action Buttons Cluster on Right */
+.touch-actions-cluster {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 200px;
+  height: 170px;
+  pointer-events: none;
+  z-index: 27;
+}
+
+.touch-btn {
+  position: absolute;
+  pointer-events: auto;
+  touch-action: manipulation;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-primary);
+  border: 1.5px solid rgba(0, 240, 255, 0.45);
+  background: rgba(8, 14, 26, 0.45);
+  backdrop-filter: blur(4px);
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 0.1s ease,
+    background 0.1s ease,
+    border-color 0.1s ease;
+}
+
+.touch-btn .btn-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.touch-btn .btn-label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+.touch-btn:active,
+.touch-btn.active {
+  transform: scale(0.92);
+  background: rgba(0, 240, 255, 0.6);
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.7);
+}
+
+/* Compact Ergonomic Cluster Layout */
+.touch-btn.fire-btn {
+  right: 6px;
+  bottom: 6px;
+  width: 58px;
+  height: 58px;
+  border-color: rgba(255, 34, 85, 0.8);
+  background: radial-gradient(circle, rgba(255, 34, 85, 0.45) 0%, rgba(12, 16, 28, 0.65) 100%);
+  box-shadow: 0 0 12px rgba(255, 34, 85, 0.35);
+}
+
+.touch-btn.fire-btn .btn-icon {
+  font-size: 20px;
+}
+
+.touch-btn.fire-btn .btn-label {
+  font-size: 8px;
+  color: #ff99aa;
+}
+
+.touch-btn.jump-btn {
+  right: 74px;
+  bottom: 10px;
+  width: 44px;
+  height: 44px;
+}
+
+.touch-btn.jump-btn .btn-icon {
+  font-size: 15px;
+}
+
+.touch-btn.ads-btn {
+  right: 68px;
+  bottom: 62px;
+  width: 44px;
+  height: 44px;
+}
+
+.touch-btn.ads-btn .btn-icon {
+  font-size: 15px;
+}
+
+.touch-btn.reload-btn {
+  right: 8px;
+  bottom: 74px;
+  width: 40px;
+  height: 40px;
+  border-color: rgba(255, 183, 3, 0.7);
+  color: #ffb703;
+}
+
+.touch-btn.reload-btn .btn-icon {
+  font-size: 14px;
+}
+
+.touch-btn.heal-btn {
+  right: 124px;
+  bottom: 58px;
+  width: 38px;
+  height: 38px;
+  border-color: rgba(0, 255, 136, 0.7);
+  color: #00ff88;
+}
+
+.touch-btn.heal-btn .btn-icon {
+  font-size: 14px;
+}
+
+.touch-btn.sprint-btn {
+  right: 126px;
+  bottom: 10px;
+  width: 38px;
+  height: 38px;
+  border-color: rgba(255, 230, 0, 0.7);
+  color: #ffe600;
+}
+
+.touch-btn.sprint-btn .btn-icon {
+  font-size: 14px;
+}
+
+/* Portrait Orientation Warning (Touch Mobile Only) */
+.orientation-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(5, 8, 17, 0.96);
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+@media (pointer: coarse) and (orientation: portrait) {
+  .orientation-overlay:not(.hidden) {
+    display: flex !important;
+  }
+}
+
+.orientation-card {
+  text-align: center;
+  max-width: 360px;
+}
+
+.phone-rotate-icon {
+  font-size: 48px;
+  margin-bottom: 14px;
+  animation: rotatePhone 2s infinite ease-in-out;
+}
+
+@keyframes rotatePhone {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-90deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.orientation-card h2 {
+  font-size: 18px;
+  color: var(--neon-amber);
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+}
+
+.orientation-card p {
+  font-family: var(--font-sub);
+  font-size: 14px;
+  color: #a0b2c6;
+  line-height: 1.5;
+}

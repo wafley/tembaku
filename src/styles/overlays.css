@@ -1,0 +1,142 @@
+/* Damage Vignette Screen Flash */
+#damage-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+  box-shadow: inset 0 0 100px 30px rgba(255, 0, 40, 0.85);
+  opacity: 0;
+  transition: opacity 0.1s ease-out;
+}
+
+/* Heal Vignette Screen Flash */
+#heal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+  box-shadow: inset 0 0 100px 25px rgba(0, 255, 140, 0.75);
+  opacity: 0;
+  transition: opacity 0.15s ease-out;
+}
+
+/* Low HP Heartbeat Pulsing Red Vignette */
+#critical-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 6;
+  box-shadow: inset 0 0 140px 45px rgba(255, 0, 45, 0.85);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+#critical-overlay.active {
+  animation: heartbeatPulse 0.85s infinite ease-in-out;
+}
+
+@keyframes heartbeatPulse {
+  0% {
+    opacity: 0.35;
+  }
+  35% {
+    opacity: 0.95;
+  }
+  50% {
+    opacity: 0.45;
+  }
+  65% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0.35;
+  }
+}
+
+/* Boss Atmospheric Combat Vignette */
+#boss-atmosphere-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 4;
+  box-shadow: inset 0 0 120px 20px rgba(180, 0, 60, 0.5);
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+#boss-atmosphere-overlay.active {
+  opacity: 1;
+  animation: bossAtmospherePulse 3s infinite alternate ease-in-out;
+}
+
+@keyframes bossAtmospherePulse {
+  0% {
+    box-shadow: inset 0 0 90px 15px rgba(160, 0, 50, 0.4);
+  }
+  100% {
+    box-shadow: inset 0 0 140px 30px rgba(255, 0, 70, 0.75);
+  }
+}
+
+/* Enemy Off-Screen Threat Edge Chevrons */
+.enemy-edge-indicators {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 12;
+}
+
+.edge-arrow {
+  position: absolute;
+  color: #ff0044;
+  font-family: var(--font-primary);
+  font-size: 28px;
+  font-weight: 900;
+  text-shadow: 0 0 10px #ff0044;
+  opacity: 0.85;
+  animation: threatPulse 0.8s infinite alternate ease-in-out;
+}
+
+@keyframes threatPulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.2);
+    opacity: 0.95;
+  }
+}
+
+.edge-arrow.left {
+  left: 14px;
+  top: 50%;
+  margin-top: -14px;
+}
+
+.edge-arrow.right {
+  right: 14px;
+  top: 50%;
+  margin-top: -14px;
+}
+
+.edge-arrow.back {
+  bottom: 24px;
+  left: 50%;
+  margin-left: -14px;
+}
