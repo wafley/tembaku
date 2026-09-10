@@ -101,6 +101,7 @@
   border-radius: 4px;
   cursor: pointer;
   outline: none;
+  text-decoration: none;
   transition: all 0.2s ease;
   box-shadow: 0 0 14px var(--neon-cyan-glow);
   display: flex;
