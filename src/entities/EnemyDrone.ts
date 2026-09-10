@@ -5,12 +5,14 @@ import { Player } from './Player';
 import { ParticleManager } from '../world/ParticleManager';
 import type { EnemyManager } from './EnemyManager';
 import { resolveEntityObstacles, steerAroundPillars } from '../physics/Steering';
+import { DifficultyConfig } from '../types';
 
 export class EnemyDrone {
   readonly scene: THREE.Scene;
   readonly player: Player;
   readonly particleManager: ParticleManager;
   readonly wave: number;
+  readonly difficulty: DifficultyConfig;
   readonly onKilled?: (drone: EnemyDrone) => void;
 
   readonly maxHealth: number;
@@ -43,12 +45,14 @@ export class EnemyDrone {
     player: Player,
     particleManager: ParticleManager,
     wave = 1,
+    difficulty: DifficultyConfig = CONFIG.DIFFICULTIES[CONFIG.DEFAULT_DIFFICULTY],
     onKilled?: (drone: EnemyDrone) => void
   ) {
     this.scene = scene;
     this.player = player;
     this.particleManager = particleManager;
     this.wave = wave;
+    this.difficulty = difficulty;
     this.onKilled = onKilled;
 
     const cfg = CONFIG.DRONE;
@@ -65,9 +69,10 @@ export class EnemyDrone {
     this.attackDistance = Math.min(22, 15 + wave * 0.3);
     this.strafeDir = Math.random() < 0.5 ? 1 : -1;
 
+    const baseInterval = cfg.BASE_SHOOT_INTERVAL - wave * cfg.INTERVAL_DECREASE_PER_WAVE;
     this.shootInterval = Math.max(
       cfg.MIN_SHOOT_INTERVAL,
-      cfg.BASE_SHOOT_INTERVAL - wave * cfg.INTERVAL_DECREASE_PER_WAVE + Math.random() * 0.8
+      (baseInterval + Math.random() * 0.8) * difficulty.droneShootIntervalMult
     );
     this.shootTimer = 1.0 + Math.random() * 1.5;
 
@@ -231,13 +236,13 @@ export class EnemyDrone {
 
     const predictedPos = playerPos.clone().addScaledVector(this.player.velocity, timeToHit * 0.85);
 
-    const spread = Math.max(0.08, 0.35 - this.wave * 0.015);
+    const spread = Math.max(0.05, this.difficulty.droneSpread - this.wave * 0.015);
     predictedPos.x += (Math.random() - 0.5) * spread;
     predictedPos.y += (Math.random() - 0.5) * (spread * 0.7);
     predictedPos.z += (Math.random() - 0.5) * spread;
 
     const dir = new THREE.Vector3().subVectors(predictedPos, startPos).normalize();
-    const damage = cfg.PROJ_DAMAGE_BASE + Math.floor(this.wave / 5);
+    const damage = this.difficulty.droneDamage + Math.floor(this.wave / 5);
 
     events.emit('sound:enemy_shoot');
     enemyManager.spawnProjectile(startPos, dir, projSpeed, damage, 0xff0044);

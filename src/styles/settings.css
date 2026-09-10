@@ -137,3 +137,107 @@
     display: none !important;
   }
 }
+
+/* Difficulty Selector Component */
+.difficulty-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.difficulty-selector.lobby-diff {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 240, 255, 0.2);
+}
+
+.diff-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2px;
+}
+
+.diff-title {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #8fa0ba;
+}
+
+.diff-tagline {
+  font-family: var(--font-sub);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--neon-cyan);
+  letter-spacing: 1px;
+}
+
+.diff-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  width: 100%;
+}
+
+.diff-tab {
+  background: rgba(10, 18, 32, 0.7);
+  border: 1.5px solid rgba(0, 240, 255, 0.25);
+  border-radius: 4px;
+  padding: 8px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+  font-family: var(--font-primary);
+  color: #a0b2c6;
+}
+
+.diff-tab:hover {
+  border-color: rgba(0, 240, 255, 0.6);
+  background: rgba(0, 240, 255, 0.12);
+}
+
+.diff-tab.active {
+  border-color: var(--neon-cyan);
+  background: rgba(0, 240, 255, 0.25);
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+}
+
+.diff-tab[data-diff='VETERAN'].active {
+  border-color: var(--neon-red);
+  background: rgba(255, 34, 85, 0.25);
+  box-shadow: 0 0 12px rgba(255, 34, 85, 0.4);
+}
+
+.diff-name {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.diff-mult {
+  font-family: var(--font-sub);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--neon-amber);
+}
+
+.diff-desc {
+  font-family: var(--font-sub);
+  font-size: 13px;
+  color: #ccd6e8;
+  margin-top: 4px;
+  line-height: 1.4;
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+}

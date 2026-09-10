@@ -206,6 +206,28 @@
         </div>
 
         <div class="lobby-actions">
+          <!-- Lobby Difficulty Selector -->
+          <div class="difficulty-selector lobby-diff">
+            <div class="diff-header">
+              <span class="diff-title">TINGKAT KESULITAN</span>
+              <span id="lobby-diff-tagline" class="diff-tagline">OPERATIVE // Score x1.0</span>
+            </div>
+            <div class="diff-tabs" id="lobby-diff-tabs">
+              <button type="button" class="diff-tab" data-diff="RECRUIT">
+                <span class="diff-name">RECRUIT</span>
+                <span class="diff-mult">x0.8</span>
+              </button>
+              <button type="button" class="diff-tab active" data-diff="OPERATIVE">
+                <span class="diff-name">OPERATIVE</span>
+                <span class="diff-mult">x1.0</span>
+              </button>
+              <button type="button" class="diff-tab" data-diff="VETERAN">
+                <span class="diff-name">VETERAN</span>
+                <span class="diff-mult">x1.5</span>
+              </button>
+            </div>
+          </div>
+
           <button id="start-btn" class="cyber-button primary-btn" type="button">
             <span class="btn-text">MULAI PERMAINAN</span>
           </button>
@@ -264,6 +286,30 @@
               <button id="mute-toggle-btn" class="cyber-toggle-btn" type="button">
                 🔊 SUARA: AKTIF
               </button>
+            </div>
+          </div>
+
+          <!-- Difficulty Section -->
+          <div class="settings-group">
+            <h3 class="group-title">TINGKAT KESULITAN</h3>
+            <div class="difficulty-selector modal-diff">
+              <div class="diff-tabs" id="modal-diff-tabs">
+                <button type="button" class="diff-tab" data-diff="RECRUIT">
+                  <span class="diff-name">RECRUIT</span>
+                  <span class="diff-mult">x0.8</span>
+                </button>
+                <button type="button" class="diff-tab active" data-diff="OPERATIVE">
+                  <span class="diff-name">OPERATIVE</span>
+                  <span class="diff-mult">x1.0</span>
+                </button>
+                <button type="button" class="diff-tab" data-diff="VETERAN">
+                  <span class="diff-name">VETERAN</span>
+                  <span class="diff-mult">x1.5</span>
+                </button>
+              </div>
+              <div id="modal-diff-desc" class="diff-desc">
+                OPERATIVE: Tantangan seimbang, drone agresif moderat, pengali skor normal 1.0x.
+              </div>
             </div>
           </div>
 

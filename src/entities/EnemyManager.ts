@@ -6,7 +6,7 @@ import { events } from '../core/EventBus';
 import { CONFIG } from '../config';
 import { Player } from './Player';
 import { ParticleManager } from '../world/ParticleManager';
-import { Projectile } from '../types';
+import { Projectile, DifficultyConfig } from '../types';
 
 const _projRay = new THREE.Ray();
 const _tempBox = new THREE.Box3();
@@ -23,6 +23,7 @@ export class EnemyManager {
   wave = 1;
   kills = 0;
   score = 0;
+  difficulty: DifficultyConfig = CONFIG.DIFFICULTIES[CONFIG.DEFAULT_DIFFICULTY];
 
   readonly bossWavesSet = new Set<number>();
   currentCycle = 1;
@@ -37,6 +38,10 @@ export class EnemyManager {
     this.scene = scene;
     this.player = player;
     this.particleManager = particleManager;
+
+    events.on('difficulty:change', (diff) => {
+      this.difficulty = diff;
+    });
 
     this.initProjectilePool();
   }
@@ -151,6 +156,7 @@ export class EnemyManager {
         this.player,
         this.particleManager,
         this.wave,
+        this.difficulty,
         (killed) => this.onEnemyKilled(killed)
       );
       this.enemies.push(drone);
@@ -171,6 +177,7 @@ export class EnemyManager {
       this.player,
       this.particleManager,
       this.wave,
+      this.difficulty,
       (killed) => this.onEnemyKilled(killed)
     );
     this.enemies.push(boss);
@@ -189,6 +196,7 @@ export class EnemyManager {
         this.player,
         this.particleManager,
         this.wave,
+        this.difficulty,
         (killed) => this.onEnemyKilled(killed)
       );
       this.enemies.push(drone);
@@ -203,7 +211,8 @@ export class EnemyManager {
 
     this.kills++;
     if (enemy.isBoss) {
-      const bossScore = 2500 + this.wave * 200;
+      const baseScore = 2500 + this.wave * 200;
+      const bossScore = Math.round(baseScore * this.difficulty.scoreMultiplier);
       this.score += bossScore;
       events.emit('wave:banner', {
         text: `🏆 BOSS TITAN DIHANCURKAN! (+${bossScore} PTS)`,
@@ -211,13 +220,13 @@ export class EnemyManager {
         duration: 3000
       });
     } else {
-      this.score += 100 * this.wave;
+      this.score += Math.round(100 * this.wave * this.difficulty.scoreMultiplier);
     }
     this.updateStats();
 
     if (this.enemies.length === 0) {
       if (this.player && !this.player.tookDamageThisWave && !this.player.isDead) {
-        const flawlessBonus = 500 * this.wave;
+        const flawlessBonus = Math.round(500 * this.wave * this.difficulty.scoreMultiplier);
         this.score += flawlessBonus;
         this.updateStats();
         events.emit('sound:flawless');

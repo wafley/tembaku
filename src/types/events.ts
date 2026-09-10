@@ -1,8 +1,12 @@
 import { GameState } from './state';
+import { DifficultyConfig } from './index';
 
 export interface EventMap {
   // State
   'state:change': { from: GameState; to: GameState };
+
+  // Difficulty
+  'difficulty:change': DifficultyConfig;
 
   // Input
   'input:lock_change': boolean;

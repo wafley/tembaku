@@ -1,6 +1,64 @@
+import { DifficultyConfig, DifficultyLevel } from './types';
+
 export const CONFIG = {
   TIMESTEP: 1 / 60,
   MAX_SUB_STEPS: 5,
+
+  DEFAULT_DIFFICULTY: 'OPERATIVE' as DifficultyLevel,
+
+  DIFFICULTIES: {
+    RECRUIT: {
+      id: 'RECRUIT',
+      name: 'RECRUIT',
+      tagline: 'Kasual & Santai',
+      scoreMultiplier: 0.8,
+      playerHp: 100,
+      medkitCooldown: 10.0,
+      medkitHeal: 35,
+      invulnTime: 300,
+      droneDamage: 3,
+      droneShootIntervalMult: 1.25,
+      droneSpread: 0.45,
+      bossHp: 1000,
+      bossSpeed: 3.8,
+      bossAttackIntervalMult: 1.2,
+      aimAssistFriction: 0.5
+    },
+    OPERATIVE: {
+      id: 'OPERATIVE',
+      name: 'OPERATIVE',
+      tagline: 'Seimbang & Standar',
+      scoreMultiplier: 1.0,
+      playerHp: 100,
+      medkitCooldown: 15.0,
+      medkitHeal: 25,
+      invulnTime: 200,
+      droneDamage: 4,
+      droneShootIntervalMult: 1.0,
+      droneSpread: 0.35,
+      bossHp: 1400,
+      bossSpeed: 4.6,
+      bossAttackIntervalMult: 1.0,
+      aimAssistFriction: 0.55
+    },
+    VETERAN: {
+      id: 'VETERAN',
+      name: 'CYBER VETERAN',
+      tagline: 'Hardcore & Brutal',
+      scoreMultiplier: 1.5,
+      playerHp: 80,
+      medkitCooldown: 20.0,
+      medkitHeal: 20,
+      invulnTime: 150,
+      droneDamage: 6,
+      droneShootIntervalMult: 0.8,
+      droneSpread: 0.15,
+      bossHp: 1900,
+      bossSpeed: 5.6,
+      bossAttackIntervalMult: 0.8,
+      aimAssistFriction: 0.75
+    }
+  } as Record<DifficultyLevel, DifficultyConfig>,
 
   PLAYER: {
     MAX_HEALTH: 100,

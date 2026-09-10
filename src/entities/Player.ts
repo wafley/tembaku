@@ -3,6 +3,7 @@ import { Capsule, PhysicsWorld } from '../physics/PhysicsWorld';
 import { InputManager } from '../core/InputManager';
 import { CONFIG } from '../config';
 import { events } from '../core/EventBus';
+import { DifficultyConfig } from '../types';
 
 export class Player {
   readonly camera: THREE.PerspectiveCamera;
@@ -10,7 +11,7 @@ export class Player {
   readonly input: InputManager;
 
   readonly cfg = CONFIG.PLAYER;
-  readonly maxHealth: number = this.cfg.MAX_HEALTH;
+  maxHealth: number = this.cfg.MAX_HEALTH;
   health: number = this.cfg.MAX_HEALTH;
   isDead = false;
   isActive = false;
@@ -46,8 +47,10 @@ export class Player {
   lastHitTime = 0;
   tookDamageThisWave = false;
   medkitCooldown = 0;
-  readonly medkitMaxCooldown = this.cfg.MEDKIT_COOLDOWN;
-  readonly medkitHealAmount = this.cfg.MEDKIT_HEAL_AMOUNT;
+  medkitMaxCooldown: number = this.cfg.MEDKIT_COOLDOWN;
+  medkitHealAmount: number = this.cfg.MEDKIT_HEAL_AMOUNT;
+  invulnTime: number = this.cfg.INVULNERABILITY_TIME;
+  aimAssistFriction = 0.55;
   heartbeatTimer = 0;
   enemyManager?: any;
   aimAssistEnabled = true;
@@ -73,7 +76,25 @@ export class Player {
       this.recoilYaw += yaw;
     });
 
+    events.on('difficulty:change', (diff) => {
+      this.applyDifficulty(diff);
+    });
+
     this.reset();
+  }
+
+  applyDifficulty(diff: DifficultyConfig): void {
+    this.maxHealth = diff.playerHp;
+    this.health = Math.min(this.health, this.maxHealth);
+    this.medkitMaxCooldown = diff.medkitCooldown;
+    this.medkitHealAmount = diff.medkitHeal;
+    this.invulnTime = diff.invulnTime;
+    this.aimAssistFriction = diff.aimAssistFriction;
+    events.emit('player:health', { current: this.health, max: this.maxHealth });
+    events.emit('player:medkit', {
+      ready: this.medkitCooldown <= 0,
+      cooldown: this.medkitCooldown
+    });
   }
 
   reset(): void {
@@ -116,7 +137,7 @@ export class Player {
     if (this.isDead) return;
 
     const now = performance.now();
-    if (now - this.lastHitTime < this.cfg.INVULNERABILITY_TIME) {
+    if (now - this.lastHitTime < this.invulnTime) {
       return;
     }
     this.lastHitTime = now;
@@ -200,9 +221,9 @@ export class Player {
       }
 
       if (bestEnemy && bestDir) {
-        // Aim Friction: slows sensitivity near target so player doesn't overshoot
-        dx *= 0.55;
-        dy *= 0.55;
+        // Aim Friction from difficulty preset
+        dx *= this.aimAssistFriction;
+        dy *= this.aimAssistFriction;
 
         // Aim Magnetism: subtle soft gravitational pull towards target center
         const targetYaw = Math.atan2(-bestDir.x, -bestDir.z);

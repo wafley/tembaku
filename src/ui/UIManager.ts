@@ -1,5 +1,7 @@
 import { events } from '../core/EventBus';
 import { GameState } from '../types/state';
+import { CONFIG } from '../config';
+import { DifficultyLevel } from '../types';
 
 export class UIManager {
   private hud = document.getElementById('hud');
@@ -69,8 +71,14 @@ export class UIManager {
 
   private isTouchDevice = false;
   private hitMarkerTimeout: ReturnType<typeof setTimeout> | null = null;
+  activeDifficulty: DifficultyLevel = CONFIG.DEFAULT_DIFFICULTY;
 
   constructor() {
+    const savedDiff = localStorage.getItem('tembaku_difficulty') as DifficultyLevel | null;
+    if (savedDiff && CONFIG.DIFFICULTIES[savedDiff]) {
+      this.activeDifficulty = savedDiff;
+    }
+
     this.bindEvents();
     this.checkOrientation();
     window.addEventListener('resize', () => this.checkOrientation());
@@ -225,7 +233,10 @@ export class UIManager {
       this.aimAssistToggleBtn.addEventListener('touchend', toggleHandler);
     }
 
-    // 6. Sensitivity Controls
+    // 6. Difficulty Selection
+    this.bindDifficultyControls();
+
+    // 7. Sensitivity Controls
     this.bindSensitivityControls(inputManager);
 
     // Prevent backdrop clicks on modal cards from propagating to lobby
@@ -234,6 +245,74 @@ export class UIManager {
       card.addEventListener('click', (e) => e.stopPropagation());
       card.addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
     });
+  }
+
+  private bindDifficultyControls(): void {
+    const lobbyTabs = document.querySelectorAll('#lobby-diff-tabs .diff-tab');
+    const modalTabs = document.querySelectorAll('#modal-diff-tabs .diff-tab');
+    const lobbyTagline = document.getElementById('lobby-diff-tagline');
+    const modalDesc = document.getElementById('modal-diff-desc');
+
+    const descriptions: Record<DifficultyLevel, string> = {
+      RECRUIT:
+        'RECRUIT: Kasual & santai. HP musuh moderat, stim heal +35 HP, toleransi invulnerability tinggi. Pengali skor 0.8x.',
+      OPERATIVE:
+        'OPERATIVE: Standar seimbang. Ritme drone agresif normal, bos Titan tangguh, stim heal +25 HP. Pengali skor 1.0x.',
+      VETERAN:
+        'CYBER VETERAN: Mode hardcore! HP pemain 80, drone sangat agresif & akurat, serangan bos lebih cepat. Pengali skor 1.5x.'
+    };
+
+    const updateUI = () => {
+      const diff = CONFIG.DIFFICULTIES[this.activeDifficulty];
+      if (lobbyTagline) {
+        lobbyTagline.innerText = `${diff.name} // Score x${diff.scoreMultiplier.toFixed(1)}`;
+      }
+      if (modalDesc) {
+        modalDesc.innerText = descriptions[this.activeDifficulty] || '';
+      }
+
+      const syncButtons = (buttons: NodeListOf<Element>) => {
+        buttons.forEach((btn) => {
+          const targetDiff = btn.getAttribute('data-diff');
+          if (targetDiff === this.activeDifficulty) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+      };
+
+      syncButtons(lobbyTabs);
+      syncButtons(modalTabs);
+    };
+
+    const handleSelect = (e: Event, btn: Element) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const selected = btn.getAttribute('data-diff') as DifficultyLevel;
+      if (selected && CONFIG.DIFFICULTIES[selected]) {
+        this.activeDifficulty = selected;
+        try {
+          localStorage.setItem('tembaku_difficulty', selected);
+        } catch {}
+        events.emit('difficulty:change', CONFIG.DIFFICULTIES[selected]);
+        updateUI();
+      }
+    };
+
+    const attachListeners = (buttons: NodeListOf<Element>) => {
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', (e) => handleSelect(e, btn));
+        btn.addEventListener('touchend', (e) => handleSelect(e, btn));
+      });
+    };
+
+    attachListeners(lobbyTabs);
+    attachListeners(modalTabs);
+
+    // Initial broadcast and UI sync
+    events.emit('difficulty:change', CONFIG.DIFFICULTIES[this.activeDifficulty]);
+    updateUI();
   }
 
   openModal(modal: HTMLElement | null): void {

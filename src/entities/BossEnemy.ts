@@ -7,12 +7,14 @@ import type { EnemyManager } from './EnemyManager';
 import { resolveEntityObstacles, steerAroundPillars } from '../physics/Steering';
 import { BossModel } from './boss/BossModel';
 import { BossAttacks, AttackConfig } from './boss/BossAttacks';
+import { DifficultyConfig } from '../types';
 
 export class BossEnemy {
   readonly scene: THREE.Scene;
   readonly player: Player;
   readonly particleManager: ParticleManager;
   readonly wave: number;
+  readonly difficulty: DifficultyConfig;
   readonly onKilled?: (boss: BossEnemy) => void;
 
   readonly isBoss = true;
@@ -73,27 +75,29 @@ export class BossEnemy {
     player: Player,
     particleManager: ParticleManager,
     wave: number,
+    difficulty: DifficultyConfig = CONFIG.DIFFICULTIES[CONFIG.DEFAULT_DIFFICULTY],
     onKilled?: (boss: BossEnemy) => void
   ) {
     this.scene = scene;
     this.player = player;
     this.particleManager = particleManager;
     this.wave = wave;
+    this.difficulty = difficulty;
     this.onKilled = onKilled;
 
     const cfg = CONFIG.BOSS;
     this.name = cfg.NAME;
-    this.maxHealth = cfg.BASE_HEALTH + wave * cfg.HP_PER_WAVE;
+    this.maxHealth = difficulty.bossHp + wave * cfg.HP_PER_WAVE;
     this.health = this.maxHealth;
     this.radius = cfg.RADIUS;
 
-    this.speed = cfg.BASE_SPEED;
+    this.speed = difficulty.bossSpeed;
     this.hoverHeight = cfg.HOVER_HEIGHT;
     this.attackDistance = cfg.ATTACK_DISTANCE;
 
-    this.mainAttackInterval = cfg.SPREAD_INTERVAL_BASE;
-    this.barrageInterval = cfg.BARRAGE_INTERVAL_BASE;
-    this.mortarInterval = cfg.MORTAR_INTERVAL_BASE;
+    this.mainAttackInterval = cfg.SPREAD_INTERVAL_BASE * difficulty.bossAttackIntervalMult;
+    this.barrageInterval = cfg.BARRAGE_INTERVAL_BASE * difficulty.bossAttackIntervalMult;
+    this.mortarInterval = cfg.MORTAR_INTERVAL_BASE * difficulty.bossAttackIntervalMult;
 
     this.attackConfig = {
       damageSpread: cfg.DAMAGE_SPREAD + Math.floor(wave / 4),

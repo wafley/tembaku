@@ -55,3 +55,23 @@ export interface Tracer {
   life: number;
   maxLife: number;
 }
+
+export type DifficultyLevel = 'RECRUIT' | 'OPERATIVE' | 'VETERAN';
+
+export interface DifficultyConfig {
+  id: DifficultyLevel;
+  name: string;
+  tagline: string;
+  scoreMultiplier: number;
+  playerHp: number;
+  medkitCooldown: number;
+  medkitHeal: number;
+  invulnTime: number;
+  droneDamage: number;
+  droneShootIntervalMult: number;
+  droneSpread: number;
+  bossHp: number;
+  bossSpeed: number;
+  bossAttackIntervalMult: number;
+  aimAssistFriction: number;
+}
