@@ -67,8 +67,8 @@ jobs:
           host: 100.97.219.24
           username: ${{ secrets.VPS_SSH_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          source: "docker-compose.yml"
-          target: "/home/wafley/tembaku"
+          source: 'docker-compose.yml'
+          target: '/home/wafley/tembaku'
 
       - name: Execute remote deploy over SSH
         uses: appleboy/ssh-action@v1.0.3
