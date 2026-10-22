@@ -2,6 +2,8 @@
 
 > Fast-paced, procedural 3D Sci-Fi FPS running in the browser. Built with Three.js, TypeScript, and Vite.
 
+> **Note**: Live demo decommissioned to conserve server compute; clone and run locally with 0 dependencies.
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Three.js](https://img.shields.io/badge/Three.js-r170+-black?logo=three.js)](https://threejs.org/)
